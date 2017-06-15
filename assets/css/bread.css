@@ -1,0 +1,8 @@
+.adjustbread{
+	position: absolute;
+	float: left;
+	top: calc(5%);
+	left: calc(50% + 180px);
+	width: 500px;
+	z-index: 2;
+}
