@@ -51,6 +51,7 @@ class Login extends MY_Controller{
                         if ($value->role == 'admin') {
                             $this->session->set_userdata(array(
                             'user_id' => $value->login_id,
+                            'user_idproxy' => $value->login_id,
                             'user_role' => $value->role,
                             'username' => $value->username,
                             'name' => $value->name,

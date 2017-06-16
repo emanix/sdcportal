@@ -11,7 +11,7 @@
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                             <div class="form-group">
                                 <div class="form-line">
-                                    <input type="text" class="form-control" id="matric" placeholder="Enter Matric No">
+                                    <input type="text" class="form-control" id="matric" name="matric" placeholder="Enter Matric No">
                                 </div>
                             </div>
                         </div>
@@ -39,7 +39,7 @@
 
     function show_case(){
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", "<?php echo base_url(); ?>Admin/create_student_case_table?stud_id="+<?php echo $this->session->userdata('studid') ?>, false);
+        xmlhttp.open("GET", "<?php echo base_url(); ?>Admin/create_student_case_table?stud_id="+document.getElementById("std").value, false);
         xmlhttp.send(null);
         document.getElementById("student_case").innerHTML=xmlhttp.responseText;
     }

@@ -10,17 +10,13 @@ class Admin extends MY_Controller{
 
 	function index($data = NULL){
         $data['page_title'] = 'View Students Case details';
-        /*$data['desc_students'] = 'Total Registered Students';
-        $data['num_students'] = count($this->M_Student->get_students());
-        $data['num_accouning_students'] = count($this->M_Student->get_acc_students());
-        $data['num_agric_students'] = count($this->M_Student->get_agric_students());
-        $data['num_anatomy_students'] = count($this->M_Student->get_anatomy_students());
-        $data['num_compsc_students'] = count($this->M_Student->get_compsc_students());*/
         $data['content_view'] = 'Admin/dashboard_view';
         $this->templates->call_admin_template($data);
 	}
 
 	function manage_session(){
+		$student = $this->M_Students->get_student_by_matric($this->input->post('matric'));
+		print_r('am here'); print_r($student); die;
 		$data['student_records'] = 'Students Management';
 		$data['add_session'] = 'Add Session';
         $data['view_session'] = 'View Session';
@@ -65,9 +61,9 @@ class Admin extends MY_Controller{
 					$student_table .="<td>{$value->semester}</td>";
 					$student_table .="<td>{$value->level}</td>";
 					$student_table .="<td>{$value->hall}</td>";
-					$this->session->set_userdata(array('studid' => $value->studid, 'name' => $value->name));
-					$student_table .="<td><a href='#'> <i onclick='show_case()'>View Case</i></a></td>";
-					$student_table .="<td><a href='".base_url()."Admin/edit_session/{$value->studid}'> <i>Add Case</i></a></td>";
+					$this->session->set_userdata(array('name' => $value->name));
+					$student_table .="<td><input type='hidden' id ='std' value='{$value->studid}'/><a href='#'> <i onclick='show_case()'>View Case</i></a></td>";
+					$student_table .="<td><a href='".base_url()."Admin/add_case/{$value->studid}'> <i>Add Case</i></a></td>";
 					$incrementer++;
 				}
 				echo $student_table;
@@ -110,7 +106,7 @@ class Admin extends MY_Controller{
 					$student_table .="<td>{$value->panel_recom}</td>";
 					$student_table .="<td>{$value->date}</td>";
 					$this->session->set_userdata('studid', $value->studid);
-					$student_table .="<td><a href='".base_url()."Admin/edit_session/{$value->caseid}'> <i>Edit Case</i></a></td>";
+					$student_table .="<td><a href='".base_url()."Admin/edit_case/{$value->caseid}'> <i>Edit Case</i></a></td>";
 					$student_table .="<td><a href='".base_url()."Admin/edit_session/{$value->caseid}'> <i>Print Case</i></a></td>";
 					$incrementer++;
 				}
@@ -121,35 +117,8 @@ class Admin extends MY_Controller{
 		}
 	}
 
-	function add_session(){
-		$this->load->library('form_validation');
-
-		$this->form_validation->set_rules('session', 'Add session', 'required|is_unique[sessiontb.session_name]', array(
-                  'is_unique'     => 'This session already exists.'));
-        // if validation fails
-        if ($this->form_validation->run() == FALSE){
-            $this->manage_session();
-
-        }
-        else
-        {
-        	if ($this->input->post()){
-        		$this->load->model('M_Admin');
-        		$this->M_Admin->add_sessions($this->input->post('session'));
-        		//Create semesters and populates the semester table in database
-        		for ($counter = 1; $counter<=2; $counter++){
-        			$data = $this->input->post('session').'.'.$counter;
-        			$this->M_Admin->add_semester($data);
-
-        		}
-        		$this->session->set_flashdata('success', 'Session successfully added');
-        		redirect(base_url() . 'Admin/manage_session');
-        	}
-        }
-	}
-
-	function edit_session($id){
-		$this->load->model('M_Admin');
+	function add_case($id){
+		/*$this->load->model('M_Admin');
 		$sid = $this->M_Admin->get_session_by_id($id);
 		//creates the session name field and populates it with the session to be edited
 		$update_field = "";
@@ -160,15 +129,33 @@ class Admin extends MY_Controller{
 				$update_field .= "</div>";
 				$this->session->set_userdata(array('sessionname' => $value->session_name));
 			}	
-		}
+		}*/
 		//Loads the edit session page
-		$data['student_records'] = 'Students Management';
-		$data['update_session'] = 'Update Session';
-        $data['page_title'] = 'Manage Session';
-        $data['optional_description'] = 'Update current session record.';
+        $data['page_title'] = 'Add Students Case';
         //$data['desc_students'] = 'Add current session';
-        $data['session_field'] = $update_field;
-        $data['content_view'] = 'Admin/update_session_view';
+        //$data['session_field'] = $update_field;
+        $data['content_view'] = 'Students/add_students_case_view';
+        $this->templates->call_admin_template($data);
+	}
+
+	function edit_case($id){
+		/*$this->load->model('M_Admin');
+		$sid = $this->M_Admin->get_session_by_id($id);
+		//creates the session name field and populates it with the session to be edited
+		$update_field = "";
+		if(count($sid) > 0){
+			foreach ($sid as $key => $value) {
+				$update_field .= "<div class='col-sm-10'>";
+				$update_field .= "<input  type='text' class='form-control' id='inputEmail3' name='{$value->session_name}' value='{$value->session_name}'>";
+				$update_field .= "</div>";
+				$this->session->set_userdata(array('sessionname' => $value->session_name));
+			}	
+		}*/
+		//Loads the edit session page
+        $data['page_title'] = 'Edit Students Case';
+        //$data['desc_students'] = 'Add current session';
+        //$data['session_field'] = $update_field;
+        $data['content_view'] = 'Students/edit_student_case_view';
         $this->templates->call_admin_template($data);
 	}
 

@@ -28,6 +28,12 @@
     <!-- Custom Css -->
     <link href="<?php echo base_url(); ?>assets/dist/css/style.css" rel="stylesheet">
 
+    <!-- Jquery Core Js -->
+    <script src="<?php echo base_url(); ?>assets/dist/plugins/jquery/jquery.min.js"></script>
+
+    <!-- Ckeditor -->
+    <script src="<?php echo base_url(); ?>assets/dist/plugins/ckeditor/ckeditor.js"></script>
+
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="<?php echo base_url(); ?>assets/dist/css/themes/all-themes.css" rel="stylesheet" />
 </head>
@@ -70,7 +76,7 @@
             <div class="navbar-header">
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="../../index.html">ADMINBSB - MATERIAL DESIGN</a>
+                <a class="navbar-brand" href="#">STUDENTS DISCIPLINARY CASE MANAGEMENT</a>
             </div>
             
         </div>
@@ -103,56 +109,18 @@
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
                     <li>
-                        <a href="../../index.html">
+                        <a href="<?php echo base_url(); ?>Admin">
                             <i class="material-icons">home</i>
                             <span>Home</span>
                         </a>
-                    </li>
-                    <li>
-                        <a href="../../pages/typography.html">
-                            <i class="material-icons">text_fields</i>
-                            <span>Typography</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../../pages/helper-classes.html">
-                            <i class="material-icons">layers</i>
-                            <span>Helper Classes</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">widgets</i>
-                            <span>Widgets</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li>
-                                <a href="javascript:void(0);" class="menu-toggle">
-                                    <span>Cards</span>
-                                </a>
-                                <ul class="ml-menu">
-                                    <li>
-                                        <a href="../../pages/widgets/cards/basic.html">Basic</a>
-                                    </li>
-                                    <li>
-                                        <a href="../../pages/widgets/cards/colored.html">Colored</a>
-                                    </li>
-                                    <li>
-                                        <a href="../../pages/widgets/cards/no-header.html">No Header</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>       
-                  </ul>
+                    </li>       
+                </ul>
             </div>
             <!-- #Menu -->
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    &copy; 2016 <a href="javascript:void(0);">AdminBSB - Material Design</a>.
-                </div>
-                <div class="version">
-                    <b>Version: </b> 1.0.4
+                    &copy; 2017 <a href="javascript:void(0);">BU Software Unit's Design</a>.
                 </div>
             </div>
             <!-- #Footer -->
@@ -324,8 +292,16 @@
     <!-- Waves Effect Plugin Js -->
     <script src="<?php echo base_url(); ?>assets/dist/plugins/node-waves/waves.js"></script>
 
+    <!-- Ckeditor -->
+    <script src="<?php echo base_url(); ?>assets/dist/plugins/ckeditor/ckeditor.js"></script>
+
+    <!-- Input Mask Plugin Js -->
+    <script src="<?php echo base_url(); ?>assets/dist/plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
+
     <!-- Custom Js -->
     <script src="<?php echo base_url(); ?>assets/dist/js/admin.js"></script>
+    <script src="<?php echo base_url(); ?>assets/dist/js/pages/forms/editors.js"></script>
+    <script src="<?php echo base_url(); ?>assets/dist/js/pages/forms/advanced-form-elements.js"></script>
 
     <!-- Demo Js -->
     <script src="<?php echo base_url(); ?>assets/dist/js/demo.js"></script>
