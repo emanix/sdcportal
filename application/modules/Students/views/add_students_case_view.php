@@ -26,7 +26,7 @@
             <div class="body">
                   <form method="POST" class="form_vertical" action = "<?php echo base_url(); ?>Admin/add_case_todb" enctype="multipart/form-data">
                     <div class="row clearfix">
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
                           <div class="form-group">
                             <div class="form-line">
                               <input type="hidden" name="studid" value="<?php echo $this->session->userdata('studid'); ?>">
@@ -34,12 +34,19 @@
                             </div>
                           </div>
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
                           <div class="form-group">
                             <div class="form-line">
                               <input type="text" class="form-control" name="infraction" placeholder="Enter Students Infraction">
                             </div>
                           </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                          <b>Student Passport</b>
+                          <div class="image">
+                            <img src="<?php echo $passport; ?>" width="58" height="58"/>
+                          </div>
+                          <!--<input type="file" name="passport">-->
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <div class="header">
@@ -53,12 +60,6 @@
                               </textarea>
                             </div>
                         </div>
-                         <!--<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
-                          <div class="image">
-                            <img src="<?php echo base_url(); ?>assets/dist/images/user.jpg" width="58" height="58" alt="User" />
-                          </div>
-                          <input type="file" name="passport">
-                        </div>-->
                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
                           <div class="form-group">
                             <div class="form-line">

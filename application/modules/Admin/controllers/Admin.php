@@ -14,20 +14,6 @@ class Admin extends MY_Controller{
         $this->templates->call_admin_template($data);
 	}
 
-	function manage_session(){
-		$student = $this->M_Students->get_student_by_matric($this->input->post('matric'));
-		print_r('am here'); print_r($student); die;
-		$data['student_records'] = 'Students Management';
-		$data['add_session'] = 'Add Session';
-        $data['view_session'] = 'View Session';
-        $data['page_title'] = 'Manage Session';
-        $data['optional_description'] = 'Create new session record.';
-        $data['desc_students'] = 'Add current session';
-        $data['session_table'] = $this->create_session_table();
-        $data['content_view'] = 'Admin/session_view';
-        $this->templates->call_admin_template($data);
-	}
-
 	function create_student_table(){
 		if (isset($_GET['matricno'])){
 			$matric = $_GET['matricno'];
@@ -66,6 +52,7 @@ class Admin extends MY_Controller{
 						$this->session->set_userdata(array('name' => $value->name));
 						$student_table .="<td><input type='hidden' id ='std' value='{$value->studid}'/><a href='#'> <i onclick='show_case()'>View Case</i></a></td>";
 						$student_table .="<td><a href='".base_url()."Admin/add_case/{$value->studid}'> <i>Add Case</i></a></td>";
+						$student_table .="<td><a href='".base_url()."Admin/add_passport/{$value->studid}'> <i>Update Passport</i></a></td>";
 						$incrementer++;
 					}
 					echo $student_table;
@@ -127,6 +114,7 @@ class Admin extends MY_Controller{
 							$this->session->set_userdata(array('name' => $value->name));
 							$student_table .="<td><input type='hidden' id ='std' value='{$value->studid}'/><a href='#'> <i onclick='show_case()'>View Case</i></a></td>";
 							$student_table .="<td><a href='".base_url()."Admin/add_case/{$value->studid}'> <i>Add Case</i></a></td>";
+							$student_table .="<td><a href='".base_url()."Admin/add_passport/{$value->studid}'> <i>Update Passport</i></a></td>";
 							$incrementer++;
 						}
 						echo $student_table;
@@ -211,8 +199,16 @@ class Admin extends MY_Controller{
 
 	function add_case($id){
 		$this->session->set_userdata('studid', $id);
+
+		$student = $this->M_Students->get_student_by_id($id);
+
+		foreach ($student as $key => $value) {
+			$data['passport'] = base_url().ltrim($value->picture, '.');
+			$data['name'] = $value->name;
+			$name = $value->name;
+		}
 		
-        $data['page_title'] = 'Add Case for ' .$this->session->userdata('name');
+        $data['page_title'] = 'Add Case for ' .$name;
         $data['content_view'] = 'Students/add_students_case_view';
         $this->templates->call_admin_template($data);
 	}
@@ -257,6 +253,7 @@ class Admin extends MY_Controller{
 	function edit_case($id){
 		$case = $this->M_Students->get_case_by_caseid($id);
 		foreach ($case as $key => $value) {
+			$data['passport'] = base_url().ltrim($value->picture, '.');
 			$data['sdc_no'] = $value->sdc_no;
 			$data['infraction'] = $value->infraction;
 			$data['infra_detail'] = $value->infraction_detail;
@@ -267,11 +264,60 @@ class Admin extends MY_Controller{
 		}
 		//Loads the edit session page
         $data['page_title'] = 'Edit Students Case of '.$name;
-        //$data['desc_students'] = 'Add current session';
-        //$data['session_field'] = $update_field;
         $data['content_view'] = 'Students/edit_student_case_view';
         $this->templates->call_admin_template($data);
 	}
+
+	function add_passport($id){
+		$student = $this->M_Students->get_student_by_id($id);
+
+		foreach ($student as $key => $value) {
+			$data['passport'] = base_url().ltrim($value->picture, '.');
+			$data['name'] = $value->name;
+			$name = $value->name;
+		}
+
+		$data['studid'] = $id;
+		$data['page_title'] = 'Add Passport for '.$name;
+        $data['content_view'] = 'Students/add_passport_view';
+        $this->templates->call_admin_template($data);
+	}
+
+	function upload_passport(){
+
+		$this->load->library(['upload']);
+		if($this->input->post()){
+			$files = $_FILES;
+				$id = $this->input->post('studid');
+                if (!file_exists("./assets/passports/")) {
+                    mkdir("./assets/passports/", 0777, true);
+                }
+                $config = $this->passport_upload_option($id);
+                $this->upload->initialize($config);
+                if($this->upload->do_upload('passport')){
+                    $file_path = $config['upload_path'].$id.$this->upload->data('file_ext');
+                    
+                    $this->M_Students->updateStudentRecord($id, $file_path);
+                }
+                $this->session->set_flashdata('success', 'Student passport uploaded successfully');
+		}
+		$data['page_title'] = 'View Students Case details';
+	    $data['content_view'] = 'Admin/dashboard_view';
+	    $this->templates->call_admin_template($data);
+
+	}
+
+	private function passport_upload_option($id){
+        //upload image options
+	    $config = array();
+	    $config['upload_path'] = "./assets/passports/";
+	    $config['file_name'] = $id;
+	    $config['allowed_types'] = 'gif|jpg|png';
+	    $config['max_size'] = '0';
+	    $config['overwrite'] = TRUE;
+
+        return $config;
+    }
 
 	function update_session(){
 		if($this->input->post()){

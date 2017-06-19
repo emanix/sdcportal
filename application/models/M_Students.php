@@ -12,6 +12,11 @@ class M_Students extends CI_Model
     	return $query->result();
     }
 
+    function get_student_by_id($id){
+        $query = $this->db->query('select * from studenttb where studid = "'.$id.'"');
+        return $query->result();
+    }
+
     function get_case_by_studentid($id){
     	/*$query = $this->db->query('select * from casetb where stud_id = "'.$id.'"');*/
     	$this->db->select('*');
@@ -38,5 +43,11 @@ class M_Students extends CI_Model
 
     function addStudentCaseRecord($data){
         $this->db->insert('casetb', $data);
+    }
+
+    function updateStudentRecord($id, $image){
+        $query = array('picture' => $image);
+        $this->db->where('studid', $id);
+        $this->db->update('studenttb', $query);
     }
 }
