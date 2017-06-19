@@ -21,4 +21,22 @@ class M_Students extends CI_Model
     	$query = $this->db->get();
     	return $query->result();
     }
+
+    function get_case_by_caseid($id){
+        /*$query = $this->db->query('select * from casetb where stud_id = "'.$id.'"');*/
+        $this->db->select('*');
+        $this->db->from('casetb');
+        $this->db->join('studenttb', 'studenttb.studid = casetb.stud_id');
+        $this->db->where('caseid', $id);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    function addStudentRecord($data){
+        $this->db->insert('studenttb', $data);
+    }
+
+    function addStudentCaseRecord($data){
+        $this->db->insert('casetb', $data);
+    }
 }

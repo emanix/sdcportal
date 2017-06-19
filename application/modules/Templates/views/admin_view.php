@@ -298,10 +298,13 @@
     <!-- Input Mask Plugin Js -->
     <script src="<?php echo base_url(); ?>assets/dist/plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
 
+    <!-- TinyMCE -->
+    <script src="<?php echo base_url(); ?>assets/dist/plugins/tinymce/tinymce.js"></script>
+
     <!-- Custom Js -->
     <script src="<?php echo base_url(); ?>assets/dist/js/admin.js"></script>
     <script src="<?php echo base_url(); ?>assets/dist/js/pages/forms/editors.js"></script>
-    <script src="<?php echo base_url(); ?>assets/dist/js/pages/forms/advanced-form-elements.js"></script>
+    <!--<script src="<?php echo base_url(); ?>assets/dist/js/pages/forms/advanced-form-elements.js"></script>-->
 
     <!-- Demo Js -->
     <script src="<?php echo base_url(); ?>assets/dist/js/demo.js"></script>
