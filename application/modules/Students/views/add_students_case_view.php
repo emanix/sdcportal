@@ -55,9 +55,15 @@
                                 </h2>
                             </div>
                             <div class="body">
-                              <textarea id="ckeditor" name="infra_detail">
-                                    
-                              </textarea>
+                              <div class="row clearfix">
+                                <div class="col-sm-12">
+                                  <div class="form-group">
+                                    <div class="form-line">
+                                      <textarea rows="8" class="form-control no-resize" name="infra_detail" placeholder="Enter Infraction details here..."></textarea>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">

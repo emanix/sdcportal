@@ -7,13 +7,14 @@
                 </h2>         
             </div>
             <div class="body">
-                  <form method="POST" class="form_vertical" action = "<?php echo base_url(); ?>Login/change_password">
+                  <form method="POST" class="form_vertical" action = "<?php echo base_url(); ?>Admin/update_case">
                     <div class="row clearfix">
                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
                           <b>SDC Number</b>
                           <div class="form-group">
                             <div class="form-line">
                               <input type="text" class="form-control" name="sdc_no" value="<?php echo $sdc_no; ?>">
+                              <input type="hidden" name="caseid" value="<?php echo $caseid; ?>">
                             </div>
                           </div>
                         </div>
@@ -33,16 +34,18 @@
                           <!--<input type="file" name="passport">-->
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <label class="header">
-                                <h2>
-                                    Infraction Details
-                                </h2>
-                            </label>
-                            <div class="body">
-                              <textarea id="ckeditor" name="infra_detail">
-                                <?php echo $infra_detail; ?>    
-                              </textarea>
+                          <div class="body">
+                            <div class="row clearfix">
+                              <div class="col-sm-12">
+                                <b>Infraction Details</b>
+                                <div class="form-group">
+                                  <div class="form-line">
+                                    <textarea rows="8" class="form-control no-resize" name="infra_detail"><?php echo $infra_detail; ?></textarea>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
+                          </div>
                         </div>
                          
                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">

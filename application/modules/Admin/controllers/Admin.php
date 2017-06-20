@@ -161,7 +161,7 @@ class Admin extends MY_Controller{
 						$student_table .="<td>{$value->date}</td>";
 						$this->session->set_userdata('studid', $value->studid);
 						$student_table .="<td><a href='".base_url()."Admin/edit_case/{$value->caseid}'> <i>Edit Case</i></a></td>";
-						$student_table .="<td><a href='".base_url()."Admin/edit_session/{$value->caseid}'> <i>Print Case</i></a></td>";
+						$student_table .="<td><a href='".base_url()."Reporting/case_report/{$value->caseid}' target='_blank'> <i>Print Case</i></a></td>";
 						$incrementer++;
 					}
 					echo $student_table;
@@ -264,6 +264,7 @@ class Admin extends MY_Controller{
 		}
 		//Loads the edit session page
         $data['page_title'] = 'Edit Students Case of '.$name;
+        $data['caseid'] = $id;
         $data['content_view'] = 'Students/edit_student_case_view';
         $this->templates->call_admin_template($data);
 	}
@@ -319,20 +320,23 @@ class Admin extends MY_Controller{
         return $config;
     }
 
-	function update_session(){
+	function update_case(){
 		if($this->input->post()){
-			$this->load->model('M_Admin');
-			$this->M_Admin->session_update();
-			//Updates the semesters of the updated session
-			for ($counter = 1; $counter<=2; $counter++){
-				$olddata = $this->session->userdata('sessionname').'.'.$counter;
-        		$data = $this->input->post($this->session->userdata('sessionname')).'.'.$counter;
-        		$this->M_Admin->semester_update($data, $olddata);
-
-        	}
-        	$this->session->set_flashdata('success', 'Session successfully updated');
-        	redirect(base_url() . 'Admin/manage_session');
+			//Updates the case
+			$cases = array('sdc_no' => $this->input->post('sdc_no'),
+				'infraction' => $this->input->post('infraction'),
+				'infraction_detail' => $this->input->post('infra_detail'),
+				'panel_recom' => $this->input->post('panel_rec'),
+				'panel_recom_det' => $this->input->post('panel_rec_det'),
+				'date' => $this->input->post('date')
+			);
+			$this->M_Students->updateCase($this->input->post('caseid'), $cases);
+        	$this->session->set_flashdata('success', 'Case successfully updated');
 		}
+
+		$data['page_title'] = 'View Students Case details';
+	    $data['content_view'] = 'Admin/dashboard_view';
+	    $this->templates->call_admin_template($data);
 	}
 
 }

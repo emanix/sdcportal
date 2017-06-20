@@ -50,4 +50,9 @@ class M_Students extends CI_Model
         $this->db->where('studid', $id);
         $this->db->update('studenttb', $query);
     }
+
+    function updateCase($id, $case){
+        $this->db->where('caseid', $id);
+        $this->db->update('casetb', $case);
+    }
 }
