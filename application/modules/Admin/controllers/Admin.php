@@ -9,8 +9,9 @@ class Admin extends MY_Controller{
 	}
 
 	function index($data = NULL){
-        $data['page_title'] = 'View Students Case details';
-        $data['content_view'] = 'Admin/dashboard_view';
+        $data['page_title'] = 'Choose semester to add case';
+        $data['semester_table'] = $this->get_semester();
+        $data['content_view'] = 'Students/semester_view';
         $this->templates->call_admin_template($data);
 	}
 
@@ -29,7 +30,7 @@ class Admin extends MY_Controller{
 				echo "<th>Program</th>";
 				echo "<th>School</th>";
 				echo "<th>Department</th>";
-				echo "<th>Semester</th>";
+				//echo "<th>Semester</th>";
 				echo "<th>Level</th>";
 				echo "<th>Hall</th>";
 				echo "</tr>";
@@ -46,12 +47,12 @@ class Admin extends MY_Controller{
 						$student_table .="<td>{$value->program}</td>";
 						$student_table .="<td>{$value->school}</td>";
 						$student_table .="<td>{$value->department}</td>";
-						$student_table .="<td>{$value->semester}</td>";
+						//$student_table .="<td>{$value->semester}</td>";
 						$student_table .="<td>{$value->level}</td>";
 						$student_table .="<td>{$value->hall}</td>";
-						$this->session->set_userdata(array('name' => $value->name));
+						$this->session->set_userdata(array('studname' => $value->name), 'studid', $value->studid);
 						$student_table .="<td><input type='hidden' id ='std' value='{$value->studid}'/><a href='#'> <i onclick='show_case()'>View Case</i></a></td>";
-						$student_table .="<td><a href='".base_url()."Admin/add_case/{$value->studid}'> <i>Add Case</i></a></td>";
+						$student_table .="<td><a href='".base_url()."Admin/addCase/{$value->studid}'> <i>Add Case</i></a></td>";
 						$student_table .="<td><a href='".base_url()."Admin/add_passport/{$value->studid}'> <i>Update Passport</i></a></td>";
 						$incrementer++;
 					}
@@ -62,7 +63,7 @@ class Admin extends MY_Controller{
 			}else{
 				$this->load->module("Umis");
 				//get students details from umis
-				$student_record = $this->umis->load_api("getStudentInfo", $matric);
+				$student_record = $this->umis->load_api("getStudentInfo", $this->session->userdata('semester_name'), $matric);
 				foreach ($student_record->transfer->record as $records){
 					$getRecord = array(
 						'matric_no' => $records->studentid,
@@ -70,7 +71,7 @@ class Admin extends MY_Controller{
 						'program' => $records->majorname,
 						'school' => $records->schoolname,
 						'department' => $records->departmentname,
-						'semester' => $records->quarterid,
+						//'semester' => $records->quarterid,
 						'level' => $records->studylevel,
 						'hall' => $records->residencename
 					);
@@ -98,9 +99,9 @@ class Admin extends MY_Controller{
 					echo "</thead>";
 					echo "<tbody>";
 					$student_table = "";
-					if (count($student)>0){
+					if (count($studentRec)>0){
 						$incrementer = 1;
-						foreach ($student as $key => $value) {
+						foreach ($studentRec as $key => $value) {
 							$student_table .="<tr>";
 							$student_table .="<td>{$incrementer}</td>";
 							$student_table .="<td>{$value->matric_no}</td>";
@@ -111,9 +112,9 @@ class Admin extends MY_Controller{
 							$student_table .="<td>{$value->semester}</td>";
 							$student_table .="<td>{$value->level}</td>";
 							$student_table .="<td>{$value->hall}</td>";
-							$this->session->set_userdata(array('name' => $value->name));
+							$this->session->set_userdata(array('studname' => $value->name));
 							$student_table .="<td><input type='hidden' id ='std' value='{$value->studid}'/><a href='#'> <i onclick='show_case()'>View Case</i></a></td>";
-							$student_table .="<td><a href='".base_url()."Admin/add_case/{$value->studid}'> <i>Add Case</i></a></td>";
+							$student_table .="<td><a href='".base_url()."Admin/addCase/{$value->studid}'> <i>Add Case</i></a></td>";
 							$student_table .="<td><a href='".base_url()."Admin/add_passport/{$value->studid}'> <i>Update Passport</i></a></td>";
 							$incrementer++;
 						}
@@ -131,7 +132,7 @@ class Admin extends MY_Controller{
 			$student = $this->M_Students->get_case_by_studentid($_GET['stud_id']);
 			if(count($student) > 0){
 				echo "<div class='header'>";
-				echo "<h2>Case Detail of {$this->session->userdata('name')}</h2>";
+				echo "<h2>Case Detail of {$this->session->userdata('studname')}</h2>";
 				echo "</div>";
 				echo "<div class='body table-responsive'>";
 				echo "<table class='table table-bordered'>";
@@ -143,6 +144,7 @@ class Admin extends MY_Controller{
 				echo "<th>Student Name</th>";
 				echo "<th>Infraction</th>";
 				echo "<th>Panel recommendation</th>";
+				echo "<th>Semester</th>";
 				echo "<th>Date</th>";
 				echo "</tr>";
 				echo "</thead>";
@@ -158,6 +160,7 @@ class Admin extends MY_Controller{
 						$student_table .="<td>{$value->name}</td>";
 						$student_table .="<td>{$value->infraction}</td>";
 						$student_table .="<td>{$value->panel_recom}</td>";
+						$student_table .="<td>{$value->semester_name}</td>";
 						$student_table .="<td>{$value->date}</td>";
 						$this->session->set_userdata('studid', $value->studid);
 						$student_table .="<td><a href='".base_url()."Admin/edit_case/{$value->caseid}'> <i>Edit Case</i></a></td>";
@@ -197,18 +200,137 @@ class Admin extends MY_Controller{
 		}
 	}
 
-	function add_case($id){
-		$this->session->set_userdata('studid', $id);
+	function get_semester(){
+		/*$this->session->set_userdata('studid', $id);
 
 		$student = $this->M_Students->get_student_by_id($id);
 
 		foreach ($student as $key => $value) {
+			//$data['passport'] = base_url().ltrim($value->picture, '.');
+			//$data['name'] = $value->name;
+			$name = $value->name;
+		}*/
+
+		$semester = $this->M_Students->getSemesters();
+		$table = "";
+		if (count($semester)>0){
+			$incrementer = 1;
+			foreach ($semester as $key => $value){
+				$table .= "<tr>";
+				$table .= "<td>{$incrementer}</td>";
+				$table .= "<td>{$value->semester_name}</td>";
+				$table .= "<td><a href='".base_url()."Admin/getMatric/{$value->semester_id}'> <i>Find Matric</i></a></td>";
+				$incrementer++;
+			}
+		}else{
+			$this->load->module("Umis");
+				//get semester details from umis
+			$semester_record = $this->umis->load_apis("getSemesters"); 
+			//print_r($semester_record); die;
+			foreach ($semester_record->transfer->record as $records){
+				$getRecord = array('semester_name' => $records->quarterid);
+				//Update semester table
+				$this->M_Students->addSemester($getRecord);
+			}
+			$semesters = $this->M_Students->getSemesters();
+			$table = "";
+			if (count($semesters)>0){
+				$incrementer = 1;
+				foreach ($semesters as $key => $value){
+					$table .= "<tr>";
+					$table .= "<td>{$incrementer}</td>";
+					$table .= "<td>{$value->semester_name}</td>";
+					$table .= "<td><a href='".base_url()."Admin/getMatric/{$value->semester_id}'> <i>Find Matric</i></a></td>";
+					$incrementer++;
+				}
+			}
+		}
+		return $table;
+	}
+
+	function getSemester(){
+
+		$semester = $this->M_Students->getSemesters();
+		$table = "";
+		if (count($semester)>0){
+			$incrementer = 1;
+			foreach ($semester as $key => $value){
+				$table .= "<tr>";
+				$table .= "<td>{$incrementer}</td>";
+				$table .= "<td>{$value->semester_name}</td>";
+				$table .= "<td><a href='".base_url()."Admin/getMatric/{$value->semester_id}'> <i>Find Matric</i></a></td>";
+				$incrementer++;
+			}
+		}else{
+			$this->load->module("Umis");
+				//get semester details from umis
+			$semester_record = $this->umis->load_apis("getSemesters"); 
+			//print_r($semester_record); die;
+			foreach ($semester_record->transfer->record as $records){
+				$getRecord = array('semester_name' => $records->quarterid);
+				//Update semester table
+				$this->M_Students->addSemester($getRecord);
+			}
+			$semesters = $this->M_Students->getSemesters();
+			$table = "";
+			if (count($semesters)>0){
+				$incrementer = 1;
+				foreach ($semesters as $key => $value){
+					$table .= "<tr>";
+					$table .= "<td>{$incrementer}</td>";
+					$table .= "<td>{$value->semester_name}</td>";
+					$table .= "<td><a href='".base_url()."Admin/getMatric/{$value->semester_id}'> <i>Find Matric</i></a></td>";
+					$incrementer++;
+				}
+			}
+		}
+	
+        $data['page_title'] = 'Choose semester to add case';
+        $data['semester_table'] = $table;
+        $data['content_view'] = 'Students/semester_view';
+        $this->templates->call_admin_template($data);
+	}
+
+	function getMatric($id){
+		$this->session->set_userdata('semester_id', $id);
+		$semester = $this->M_Students->getSemester($id);
+		foreach ($semester as $key => $value) {
+			$sem = $value->semester_name;
+			$this->session->set_userdata('semester_name', $sem);
+		}
+		$data['page_title'] = 'Enter Students Matric Number to search in '.$sem.'';
+        $data['content_view'] = 'Admin/dashboard_view';
+        $this->templates->call_admin_template($data);
+	}
+
+	function viewCase(){
+		/*$this->session->set_userdata('semester_id', $id);
+		$semester = $this->M_Students->getSemester($id);
+		foreach ($semester as $key => $value) {
+			$sem = $value->semester_name;
+			$this->session->set_userdata('semester_name', $sem);
+		}*/
+		$data['page_title'] = 'Enter Students Matric Number';
+        $data['content_view'] = 'Admin/view_case_view';
+        $this->templates->call_admin_template($data);
+	}
+
+	function addCase($id){
+		//$this->session->set_userdata('semester_id', $id);
+		$semester = $this->M_Students->getSemester($this->session->userdata('semester_id'));
+		$data['semid'] = $this->session->userdata('semester_id');
+		$data['studid'] = $id;
+		foreach ($semester as $key => $value) {
+			$sem = $value->semester_name;
+		}
+		$student = $this->M_Students->get_student_by_id($id);
+
+		foreach ($student as $key => $value) {
 			$data['passport'] = base_url().ltrim($value->picture, '.');
-			$data['name'] = $value->name;
+			//$data['name'] = $value->name;
 			$name = $value->name;
 		}
-		
-        $data['page_title'] = 'Add Case for ' .$name;
+		$data['page_title'] = 'Add Case for '.$name.' in ('.$sem.')';
         $data['content_view'] = 'Students/add_students_case_view';
         $this->templates->call_admin_template($data);
 	}
@@ -237,17 +359,17 @@ class Admin extends MY_Controller{
 					'infraction_detail' => $this->input->post('infra_detail'),
 					'panel_recom' => $this->input->post('panel_rec'),
 					'panel_recom_det' => $this->input->post('panel_rec_det'),
+					'semid' => $this->input->post('sem_id'),
 					'date' => $this->input->post('date')
 				);
-
+				//print_r($this->input->post('studid')); die;
 				$this->M_Students->addStudentCaseRecord($caseDetails);
 				$this->session->set_flashdata('success', 'Student case added successfully');
 			}
-
-			$data['page_title'] = 'View Students Case details';
-	        $data['content_view'] = 'Admin/dashboard_view';
-	        $this->templates->call_admin_template($data);
 	    }
+	    $data['page_title'] = 'View Students Case details';
+	    $data['content_view'] = 'Admin/dashboard_view';
+	    $this->templates->call_admin_template($data);
 	}
 
 	function edit_case($id){
@@ -339,4 +461,52 @@ class Admin extends MY_Controller{
 	    $this->templates->call_admin_template($data);
 	}
 
+	function create_student_tables(){
+		if (isset($_GET['matricno'])){
+			$matric = $_GET['matricno'];
+			$student = $this->M_Students->get_student_by_matric($_GET['matricno']);
+			if(count($student) > 0){
+				echo "<div class='body table-responsive'>";
+				echo "<table class='table table-bordered'>";
+				echo "<thead>";
+				echo "<tr>";
+				echo "<th>Serial No</th>";
+				echo "<th>Matric No</th>";
+				echo "<th>Student Name</th>";
+				echo "<th>Program</th>";
+				echo "<th>School</th>";
+				echo "<th>Department</th>";
+				//echo "<th>Semester</th>";
+				echo "<th>Level</th>";
+				echo "<th>Hall</th>";
+				echo "</tr>";
+				echo "</thead>";
+				echo "<tbody>";
+				$student_table = "";
+				if (count($student)>0){
+					$incrementer = 1;
+					foreach ($student as $key => $value) {
+						$student_table .="<tr>";
+						$student_table .="<td>{$incrementer}</td>";
+						$student_table .="<td>{$value->matric_no}</td>";
+						$student_table .="<td>{$value->name}</td>";
+						$student_table .="<td>{$value->program}</td>";
+						$student_table .="<td>{$value->school}</td>";
+						$student_table .="<td>{$value->department}</td>";
+						//$student_table .="<td>{$value->semester}</td>";
+						$student_table .="<td>{$value->level}</td>";
+						$student_table .="<td>{$value->hall}</td>";
+						$this->session->set_userdata(array('studname' => $value->name), 'studid', $value->studid);
+						$student_table .="<td><input type='hidden' id ='std' value='{$value->studid}'/><a href='#'> <i onclick='show_case()'>View Case</i></a></td>";
+						//$student_table .="<td><a href='".base_url()."Admin/addCase/{$value->studid}'> <i>Add Case</i></a></td>";
+						$student_table .="<td><a href='".base_url()."Admin/add_passport/{$value->studid}'> <i>Update Passport</i></a></td>";
+						$incrementer++;
+					}
+					echo $student_table;
+				}
+				echo "</tbody>";
+				echo "</table>";
+			}
+		}
+	}
 }

@@ -22,6 +22,7 @@ class M_Students extends CI_Model
     	$this->db->select('*');
     	$this->db->from('casetb');
     	$this->db->join('studenttb', 'studenttb.studid = casetb.stud_id');
+        $this->db->join('semestertb', 'semestertb.semester_id = casetb.semid');
     	$this->db->where('stud_id', $id);
     	$query = $this->db->get();
     	return $query->result();
@@ -36,6 +37,28 @@ class M_Students extends CI_Model
         $query = $this->db->get();
         return $query->result();
     }
+
+    function getSemesters(){
+        /*$query = $this->db->query('select * from semestertb order by semester_name DECS');*/
+        $this->db->select('*');
+        $this->db->from('semestertb');
+        $this->db->order_by('semester_id', 'DESC');
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    function getSemester($data){
+        $query = $this->db->query('select * from semestertb where semester_id = "'.$data.'"');
+        return $query->result();
+    }
+
+    function addSemester($data){
+        $this->db->insert('semestertb', $data);
+    }
+
+    /*function addSemester($data){
+        $this->db->update('semestertb', $data);
+    }*/
 
     function addStudentRecord($data){
         $this->db->insert('studenttb', $data);

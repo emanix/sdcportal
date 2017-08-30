@@ -8,7 +8,7 @@
             </div>
             <?php if (isset($_SESSION['failed'])) {?>
                 <div class="alert alert-warning">
-                    <strong>Warning!</strong> <?php  echo $_SESSION['failed'];?>
+                    <?php  echo $_SESSION['failed'];?>
                 </div>
                 <?php } ?>
 
@@ -29,8 +29,9 @@
                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
                           <div class="form-group">
                             <div class="form-line">
-                              <input type="hidden" name="studid" value="<?php echo $this->session->userdata('studid'); ?>">
+                              <input type="hidden" name="studid" value="<?php echo $studid; ?>">
                               <input type="text" class="form-control" name="sdc_no" placeholder="Enter SDC No">
+                              <input type="hidden" name="sem_id" value="<?php echo $semid; ?>">
                             </div>
                           </div>
                         </div>
@@ -93,7 +94,7 @@
                               <i class="material-icons">date_range</i>
                             </span>
                             <div class="form-line">
-                              <input type="text" class="form-control date" name="date" placeholder="Example: 30/07/2016">
+                              <input type="text" class="form-control date" name="date" placeholder="Example: 2016-07-30">
                             </div>
                           </div>
                         </div>

@@ -109,9 +109,15 @@
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
                     <li>
-                        <a href="<?php echo base_url(); ?>Admin">
-                            <i class="material-icons">home</i>
-                            <span>Home</span>
+                        <a href="<?php echo base_url(); ?>Admin/getSemester">
+                            <i class="material-icons">add_box</i>
+                            <span>Add Case</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?php echo base_url(); ?>Admin/viewCase">
+                            <i class="material-icons">add_box</i>
+                            <span>View Case</span>
                         </a>
                     </li>       
                 </ul>

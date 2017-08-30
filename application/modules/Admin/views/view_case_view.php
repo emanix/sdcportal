@@ -36,7 +36,7 @@
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                            <button type="button" class="btn btn-primary btn-lg m-l-15 waves-effect" onclick="show_table()">Search</button>
+                            <button type="button" class="btn btn-primary btn-lg m-l-15 waves-effect" onclick="show_tables()">Search</button>
                         </div>
                     </div>
             </div>
@@ -50,18 +50,22 @@
     </div>
 </div>
 <script type="text/javascript">
-    function show_table(){
+    function show_tables(){
         if(document.getElementById("matric").value != ""){
             var xmlhttp = new XMLHttpRequest();
-            xmlhttp.open("GET", "<?php echo base_url(); ?>Admin/create_student_table?matricno="+document.getElementById("matric").value, false);
+            xmlhttp.open("GET", "<?php echo base_url(); ?>Admin/create_student_tables?matricno="+document.getElementById("matric").value, false);
             xmlhttp.send(null);
-            document.getElementById("student").innerHTML=xmlhttp.responseText;
+            if(xmlhttp.responseText != ""){
+                document.getElementById("student").innerHTML=xmlhttp.responseText;
+            }else{
+                document.getElementById("student").innerHTML= "<h3 style='color: red'><center>There is no case record for this student</center></h3>";
+            }
+            
             document.getElementById("student_case").innerHTML= "";
             if(document.getElementById("warning").innerHTML != ""){
                 document.getElementById("warning").innerHTML = "";
             }
         }else{
-            document.getElementById("warning").color = 'red';
             document.getElementById("warning").innerHTML = "<h5 style='color: red'><center>Please enter a matric number to continue...</center></h5>";
         }
     }
